@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>تطبيق الاحتمال للصف الرابع</title>
+<style>
+:root{--bg:#fdf4fb;--card:#fff;--ink:#3b1f4a;--mut:#7a6585;--pri:#9b4dca;--pri2:#e86fb0;--ok:#2e9e6b;--bad:#d9455f;--line:#ecd8f2;--soft:#f6e6fb;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1d1226;--card:#2a1b36;--ink:#f6e9fb;--mut:#c2aacd;--pri:#c585ec;--pri2:#f08cc2;--line:#4a3358;--soft:#38244a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1d1226;--card:#2a1b36;--ink:#f6e9fb;--mut:#c2aacd;--pri:#c585ec;--pri2:#f08cc2;--line:#4a3358;--soft:#38244a;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Segoe UI",Tahoma,"Noto Naskh Arabic",Arial,sans-serif;line-height:1.7}
+.wrap{max-width:760px;margin:auto;padding:14px}
+header{background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;border-radius:22px;padding:18px;text-align:center}
+header h1{margin:4px 0;font-size:1.7rem}header p{margin:0;opacity:.95}
+.emo{font-size:2rem;letter-spacing:6px}
+.prog{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:12px 14px;margin:12px 0;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.stars{font-size:1.7rem;color:#f5b301;letter-spacing:3px}
+.bar{flex:1;min-width:140px;height:14px;background:var(--soft);border-radius:9px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--pri2),var(--pri));transition:width .5s}
+nav{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px}
+nav button{border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;padding:8px 2px;font:inherit;font-size:.9rem;cursor:pointer}
+nav button.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+nav span{display:block;font-size:1.3rem}
+section{display:none;background:var(--card);border:2px solid var(--line);border-radius:22px;padding:16px}
+section.on{display:block}
+h2{margin:0 0 8px;color:var(--pri)}h3{margin:0 0 4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:12px 0}
+.c{background:var(--soft);border-radius:16px;padding:12px;text-align:center}
+.c b{font-size:1.8rem;display:block}
+.btn{background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;border:0;border-radius:14px;padding:11px 20px;font:inherit;font-weight:700;cursor:pointer;margin:6px 0}
+.btn:active{transform:scale(.97)}
+.stage{text-align:center;margin:10px 0}
+#wheel{width:220px;height:220px;transition:transform 3s cubic-bezier(.15,.7,.1,1)}
+.ptr{font-size:2rem;line-height:1;color:var(--bad)}
+.res{font-size:1.2rem;min-height:2em;font-weight:700}
+.q{border-top:2px dashed var(--line);padding:10px 0}
+.opts{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.opt{border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:7px 12px;font:inherit;cursor:pointer}
+.opt.sel{border-color:var(--pri);background:var(--soft)}
+.opt.right{border-color:var(--ok);background:rgba(46,158,107,.18)}
+.opt.wrong{border-color:var(--bad);background:rgba(217,69,95,.16)}
+.fb{margin:8px 0;font-weight:700}
+.bag{font-size:2.2rem;line-height:1.3}
+.balls{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:8px 0}
+.ball{width:30px;height:30px;border-radius:50%;display:inline-block;box-shadow:inset -4px -4px 0 rgba(0,0,0,.15)}
+.tally{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.tally span{background:var(--soft);border-radius:12px;padding:4px 12px}
+select{font:inherit;color:var(--ink);background:var(--card);border:2px solid var(--line);border-radius:10px;padding:6px;width:100%;margin-top:6px}
+select.right{border-color:var(--ok)}select.wrong{border-color:var(--bad)}
+.tools{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+footer{text-align:center;color:var(--mut);margin:16px 0 8px;font-size:.95rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<div class="emo">🎲⭐❓🟣</div>
+<h1>تطبيق الاحتمال</h1>
+<p>للصف الرابع الابتدائي | تعلّمي، جرّبي، وتحققي</p>
+</header>
+
+<div class="prog">
+<div><b>نجماتكِ</b><div class="stars" id="stars">☆☆☆</div></div>
+<div class="bar" aria-label="التقدم"><i id="fill"></i></div>
+<b id="pct">٠٪</b>
+</div>
+
+<nav id="nav">
+<button class="on" data-t="home"><span>🏠</span>الرئيسية</button>
+<button data-t="a1"><span>🎡</span>نشاط ١</button>
+<button data-t="a2"><span>🎒</span>نشاط ٢</button>
+<button data-t="ch"><span>🏆</span>التحدي</button>
+</nav>
+
+<section id="home" class="on">
+<h2>هيا نستكشف الاحتمال 🎡</h2>
+<p>الاحتمال يساعدنا على وصف حدوث الأشياء: هل هي مؤكدة، مستحيلة، متساوية الإمكانية، أكثر احتمالًا، أم أقل احتمالًا؟</p>
+<div class="grid">
+<div class="c"><b>✅</b><h3>مؤكد</h3>سيحدث دائمًا.<br><small>الشمس تُشرق صباحًا.</small></div>
+<div class="c"><b>⚖️</b><h3>متساوي الإمكانية</h3>فرصة الحدوث وعدمه متساوية.<br><small>ظهور صورة عند رمي قطعة نقد.</small></div>
+<div class="c"><b>✖️</b><h3>مستحيل</h3>لن يحدث أبدًا.<br><small>ظهور ٧ في مكعب أرقامه ١–٦.</small></div>
+<div class="c"><b>📊</b><h3>أكثر / أقل احتمالًا</h3>نقارن عدد النتائج الممكنة لكل حدث.</div>
+</div>
+<button class="btn" onclick="go('a1')">ابدئي نشاط العجلة 🎡</button>
+</section>
+
+<section id="a1">
+<h2>🎡 نشاط ١: عجلة الحظ</h2>
+<p>العجلة مقسّمة إلى ٤ أجزاء متساوية، وكل جزء عليه رمز مختلف.</p>
+<div class="stage">
+<div class="ptr">▼</div>
+<svg id="wheel" viewBox="0 0 200 200">
+<path d="M100 100L100 10A90 90 0 0 1 190 100Z" fill="#ffb3c9"/>
+<path d="M100 100L190 100A90 90 0 0 1 100 190Z" fill="#c9b3ff"/>
+<path d="M100 100L100 190A90 90 0 0 1 10 100Z" fill="#b3e6ff"/>
+<path d="M100 100L10 100A90 90 0 0 1 100 10Z" fill="#fff0a8"/>
+<g font-size="34" text-anchor="middle" dominant-baseline="central">
+<text x="139" y="61">🍎</text><text x="139" y="139">⚽</text><text x="61" y="139">📖</text><text x="61" y="61">⭐</text></g>
+<circle cx="100" cy="100" r="8" fill="#9b4dca"/>
+</svg>
+<div class="res" id="r1">اضغطي لتجربة الدوران</div>
+<button class="btn" id="spin">أدِيري العجلة</button>
+</div>
+<h2>أجيبي عن الأسئلة</h2>
+<div class="quiz" id="q1"></div>
+</section>
+
+<section id="a2">
+<h2>🎒 نشاط ٢: كيس الكرات</h2>
+<p>في الكيس: ٤ كرات حمراء، ٢ زرقاء، ١ خضراء. جرّبي السحب عدة مرات وشاهدي النتائج.</p>
+<div class="stage">
+<div class="bag">🎒</div>
+<div class="balls">
+<span class="ball" style="background:#e53950"></span><span class="ball" style="background:#e53950"></span><span class="ball" style="background:#e53950"></span><span class="ball" style="background:#e53950"></span>
+<span class="ball" style="background:#2f7de1"></span><span class="ball" style="background:#2f7de1"></span><span class="ball" style="background:#2eb35f"></span>
+</div>
+<div class="res" id="r2">اسحبي كرة</div>
+<button class="btn" id="draw">اسحبي كرة</button>
+<div class="tally"><span>🔴 <b id="t0">٠</b></span><span>🔵 <b id="t1">٠</b></span><span>🟢 <b id="t2">٠</b></span></div>
+</div>
+<h2>حلّلي الاحتمال</h2>
+<div class="quiz" id="q2"></div>
+</section>
+
+<section id="ch">
+<h2>🏆 تحدي الاحتمال</h2>
+<p>اختاري الوصف المناسب لكل حدث. 🎲 مكعب أرقام من ١ إلى ٦ &nbsp; 🪙 قطعة نقد &nbsp; 🎒 كيس: ٤ حمراء، ٢ زرقاء، ١ خضراء</p>
+<div id="q3"></div>
+<div class="fb" id="f3"></div>
+<button class="btn" id="chk3">تحققي من التحدي</button>
+</section>
+
+<div class="tools"><button class="btn" onclick="resetAll()">↻ أعيدي المحاولة</button></div>
+<footer>أ/ أميرة المطيري | معلمة الرياضيات 💜</footer>
+</div>
+
+<script>
+const AR=n=>String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
+const stars=[0,0,0];
+function upd(){const n=stars.reduce((a,b)=>a+b,0);
+document.getElementById('stars').textContent='★'.repeat(n)+'☆'.repeat(3-n);
+document.getElementById('fill').style.width=(n/3*100)+'%';
+document.getElementById('pct').textContent=AR(Math.round(n/3*100))+'٪'}
+function go(t){document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id===t));
+document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));window.scrollTo(0,0)}
+document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>go(b.dataset.t));
+
+/* wheel */
+let rot=0,spinning=false;const sym=['🍎','⚽','📖','⭐'];
+document.getElementById('spin').onclick=()=>{if(spinning)return;spinning=true;
+rot+=1440+Math.floor(Math.random()*360);
+document.getElementById('wheel').style.transform='rotate('+rot+'deg)';
+document.getElementById('r1').textContent='...';
+setTimeout(()=>{const i=Math.floor(((360-rot%360)%360)/90);
+document.getElementById('r1').textContent='وقفت العجلة على '+sym[i];spinning=false},3100)};
+
+/* bag */
+const bag=['🔴','🔴','🔴','🔴','🔵','🔵','🟢'],cnt=[0,0,0],names=['🔴','🔵','🟢'];
+document.getElementById('draw').onclick=()=>{const c=bag[Math.floor(Math.random()*7)];
+const i=names.indexOf(c);cnt[i]++;document.getElementById('t'+i).textContent=AR(cnt[i]);
+document.getElementById('r2').textContent='سحبتِ كرة '+c}
+
+/* quizzes */
+function quiz(id,qs,star,btnText){
+const box=document.getElementById(id);const pick=[];
+qs.forEach((q,qi)=>{const d=document.createElement('div');d.className='q';
+d.innerHTML='<b>'+AR(qi+1)+') '+q.t+'</b><div class="opts"></div>';
+const o=d.querySelector('.opts');
+q.o.forEach((x,oi)=>{const b=document.createElement('button');b.className='opt';b.textContent=x;
+b.onclick=()=>{pick[qi]=oi;o.querySelectorAll('.opt').forEach(e=>e.classList.remove('sel','right','wrong'));b.classList.add('sel')};
+o.appendChild(b)});box.appendChild(d)});
+const f=document.createElement('div');f.className='fb';
+const btn=document.createElement('button');btn.className='btn';btn.textContent=btnText;
+btn.onclick=()=>{let ok=0;
+box.querySelectorAll('.q').forEach((d,qi)=>{const bs=d.querySelectorAll('.opt');
+bs.forEach(e=>e.classList.remove('right','wrong'));
+if(pick[qi]==null)return;
+if(pick[qi]===qs[qi].a){ok++;bs[pick[qi]].classList.add('right')}else bs[pick[qi]].classList.add('wrong')});
+if(ok===qs.length){f.textContent='🌟 ممتازة! إجاباتكِ كلها صحيحة';f.style.color='var(--ok)';stars[star]=1}
+else{f.textContent='أجبتِ عن '+AR(ok)+' من '+AR(qs.length)+' بشكل صحيح. حاولي مرة أخرى 💪';f.style.color='var(--bad)'}
+upd()};
+box.appendChild(btn);box.appendChild(f)}
+const T=['مؤكد','متساوي الإمكانية','مستحيل'];
+quiz('q1',[
+{t:'ما احتمال أن تقف العجلة على أحد الرموز الموجودة فيها (🍎 أو ⚽ أو 📖 أو ⭐)؟',o:T,a:0},
+{t:'ما احتمال أن تقف العجلة على 🌙 وهو غير موجود فيها؟',o:T,a:2},
+{t:'فرصة الوقوف على 🍎 مقارنةً بفرصة الوقوف على ⭐ هي:',o:T,a:1}],0,'تحققي من الإجابات');
+quiz('q2',[
+{t:'ما اللون الأكثر احتمالًا عند السحب؟',o:['الأحمر','الأزرق','الأخضر'],a:0},
+{t:'ما اللون الأقل احتمالًا عند السحب؟',o:['الأحمر','الأزرق','الأخضر'],a:2},
+{t:'سحب كرة زرقاء مقارنةً بسحب كرة حمراء:',o:['أقل احتمالًا','متساوي الإمكانية','أكثر احتمالًا'],a:0},
+{t:'كم كرة يمكن أن نسحب من الكيس بالمجموع؟ (عدد النتائج الممكنة)',o:['٣ كرات','٧ كرات','٤ كرات'],a:1}],1,'تحققي من التحليل');
+
+/* challenge */
+const L=['مؤكد','مستحيل','متساوي الإمكانية','أكثر احتمالًا','أقل احتمالًا'];
+const ev=[
+['🎲 عند رمي مكعب أرقام من ١ إلى ٦، يظهر رقم من ١ إلى ٦.',0],
+['🎲 عند رمي مكعب أرقام من ١ إلى ٦، يظهر الرقم ٧.',1],
+['🪙 عند رمي قطعة نقد، تظهر صورة.',2],
+['🎒 من كيس فيه ٤ حمراء و٢ زرقاء و١ خضراء، نسحب كرة حمراء.',3],
+['🎒 من كيس فيه ٤ حمراء و٢ زرقاء و١ خضراء، نسحب كرة خضراء.',4]];
+const q3=document.getElementById('q3');
+ev.forEach((e,i)=>{const d=document.createElement('div');d.className='q';
+d.innerHTML='<b>'+AR(i+1)+') '+e[0]+'</b><select><option value="">اختاري...</option>'+L.map((x,j)=>'<option value="'+j+'">'+x+'</option>').join('')+'</select>';
+q3.appendChild(d)});
+document.getElementById('chk3').onclick=()=>{let ok=0;
+q3.querySelectorAll('select').forEach((s,i)=>{s.classList.remove('right','wrong');if(s.value==='')return;
+if(+s.value===ev[i][1]){ok++;s.classList.add('right')}else s.classList.add('wrong')});
+const f=document.getElementById('f3');
+if(ok===5){f.textContent='🏆 بطلة الاحتمال! أنتِ رائعة';f.style.color='var(--ok)';stars[2]=1}
+else{f.textContent='صحيح '+AR(ok)+' من ٥. راجعي الأحداث الملوّنة بالأحمر 💪';f.style.color='var(--bad)'}
+upd()};
+
+function resetAll(){location.reload()}
+upd();
+</script>
+</body>
+</html>
